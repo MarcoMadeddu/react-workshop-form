@@ -10,9 +10,8 @@ interface FormData{
 function App() {
   const [formData, setFormData] = useState<FormData>({username: 'guest' , job: 'freelance'});
 
-  function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>){
-    setFormData({username: e.currentTarget.value, job: 'employee'})
-  }
+
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {setFormData({username: e.currentTarget.value, job: 'employee'})}
 
   return (
    <div className="container mt-2">
@@ -29,7 +28,7 @@ function App() {
         name="username"
         type="text"
         placeholder="Write your username"
-        onChange = {onChangeHandler}
+        onChange = {(e: React.ChangeEvent<HTMLInputElement>) => onChangeHandler}
         value={formData.username}
       />
    </div>
