@@ -1,15 +1,20 @@
 import React, {useState} from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 interface FormData{
   username: string;
   job: string;
-  age: number;
+  age: number | string;
 }
 
 function App() {
-  const [formData, setFormData] = useState<FormData>({username: '' , job: '',age:0});
+  const [formData, setFormData] = useState<FormData>({username: '' , job: 'Select your Job',age:''});
+
+  const isUserNameValid = formData.username.length > 3;
+  const isJobValid = formData.job.length > 0;
+  const isAgeValid = formData.age !==  0;
+  const isValid = isUserNameValid && isJobValid && isAgeValid;
+
 
 
   // const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {setFormData({username: e.currentTarget.value, job: 'employee'})}
@@ -20,13 +25,18 @@ function App() {
     })
   }
   
+
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement> ) =>{
     // PREVENT DEFAULT FOR AVOID REFRESH
     e.preventDefault();
     // GET ALL FORM STATE VALUES
-    console.log(formData);
-    // RESET FORM
-    setFormData({username: '', job: '', age: 0 });
+    if(isValid){
+      console.log(formData);
+      // RESET FORM
+      setFormData({username: '', job: '', age: 0 });
+    }else{
+      alert('Compila tutti i campi');
+    }
   }
 
   return (
@@ -44,27 +54,36 @@ function App() {
           type="text"
           placeholder="Write your username"
           onChange = {onChangeHandler}
-          value={formData.username}
+          className="form-control mt-2"
+          value = {formData.username}
         />
         <br/>
         <input
           name="age"
           type="number"
           placeholder="insert your Age"
+          className="form-control mt-2"
           onChange = {onChangeHandler}
+          value = {formData.age}
         />
          <br/>
         <select 
           name="job" 
           onChange={onChangeHandler}
-          value={formData.job}
+          className="form-control mt-2"
         >
-          <option value=""  disabled hidden>Select your Job</option>
+          <option value={formData.job} hidden disabled></option>
           <option value="freelance">Freelance</option>
           <option value="employee">Employee</option>
         </select>
-
-        <button className="btn btn-primary ms-2" type="submit">SEND</button>
+        <br/>
+        <button
+          disabled = {!isValid} 
+          className="btn btn-primary mt-2" 
+          type="submit"
+        >
+          SEND
+        </button>
       </form>
    </div>
   );
