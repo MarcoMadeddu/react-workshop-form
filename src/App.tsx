@@ -17,7 +17,7 @@ function App() {
   const isUserNameValid = formData.username.length > 3;
   const isJobValid = formData.job.length > 0 && formData.job !== 'Select a Job';
   const isAgeValid = formData.age !==  0 && formData.age !== '';
-  const isCityValid = formData.city.length > 0;
+  const isCityValid = formData.city.length > 2;
   const isValid = isUserNameValid && isJobValid && isAgeValid && isCityValid;
  
 
@@ -30,8 +30,9 @@ function App() {
     setDirty(true);
   }
 
-  function onBlurHandler(e: React.ChangeEvent<HTMLInputElement | HTMLInputElement>){
-    setTouched(true);
+  function onBlurHandler(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>){
+    console.log(touched)
+    setTouched(!touched);
   }
   
 
@@ -63,10 +64,11 @@ function App() {
           type="text"
           placeholder="Write your username"
           onChange = {onChangeHandler}
+          onBlur = {onBlurHandler}
           className ={classnames(
             'form-control mt-2',
             {'is-valid' : isUserNameValid},
-            {'is-invalid' : !isUserNameValid && dirty}
+            {'is-invalid' : !isUserNameValid && touched}
           )}
           value = {formData.username}
         />
@@ -78,9 +80,10 @@ function App() {
           className ={classnames(
             'form-control mt-2',
             {'is-valid' : isAgeValid},
-            {'is-invalid' : !isAgeValid && dirty}
+            {'is-invalid' : !isAgeValid && touched}
           )}
           onChange = {onChangeHandler}
+          onBlur = {onBlurHandler}
           value = {formData.age}
         />
         <br/>
@@ -101,14 +104,16 @@ function App() {
         <select 
           name="job" 
           onChange={onChangeHandler}
+          onBlur = {onBlurHandler}
           className ={classnames(
             'form-control mt-2',
             {'is-valid' : isJobValid},
-            {'is-invalid' : !isJobValid && dirty}
+            {'is-invalid' : !isJobValid && touched}
           )}
+          value={formData.job}
         >
           {/* HOW TO INSERT A DEFAULT VALUE TAKEN IT FROM THE FORMDATA.JOB? */}
-          <option value={formData.job} hidden disabled></option>
+          <option  hidden disabled>{formData.job}</option>
           <option value="freelance">Freelance</option>
           <option value="employee">Employee</option>
         </select>
