@@ -1,28 +1,37 @@
 import React, {useState} from 'react';
 import './App.css';
+import classnames from 'classnames';
 
 interface FormData{
   username: string;
   job: string;
   age: number | string;
+  city: string;
 }
 
 function App() {
-  const [formData, setFormData] = useState<FormData>({username: '' , job: 'Select your Job',age:''});
+  const [formData, setFormData] = useState<FormData>({username: '' , job: 'Select a Job',age:'',city: ''});
+  const [dirty, setDirty] = useState<boolean>(false);
+  const [touched, setTouched] = useState<boolean>(false);
 
   const isUserNameValid = formData.username.length > 3;
-  const isJobValid = formData.job.length > 0;
-  const isAgeValid = formData.age !==  0;
-  const isValid = isUserNameValid && isJobValid && isAgeValid;
+  const isJobValid = formData.job.length > 0 && formData.job !== 'Select a Job';
+  const isAgeValid = formData.age !==  0 && formData.age !== '';
+  const isCityValid = formData.city.length > 0;
+  const isValid = isUserNameValid && isJobValid && isAgeValid && isCityValid;
+ 
 
-
-
-  // const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {setFormData({username: e.currentTarget.value, job: 'employee'})}
   function onChangeHandler(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     setFormData({ 
      ...formData,
      [e.currentTarget.name]: e.currentTarget.value
     })
+
+    setDirty(true);
+  }
+
+  function onBlurHandler(e: React.ChangeEvent<HTMLInputElement | HTMLInputElement>){
+    setTouched(true);
   }
   
 
@@ -33,7 +42,7 @@ function App() {
     if(isValid){
       console.log(formData);
       // RESET FORM
-      setFormData({username: '', job: '', age: 0 });
+      setFormData({username: '', job: '', age: '',city: ''});
     }else{
       alert('Compila tutti i campi');
     }
@@ -54,7 +63,11 @@ function App() {
           type="text"
           placeholder="Write your username"
           onChange = {onChangeHandler}
-          className="form-control mt-2"
+          className ={classnames(
+            'form-control mt-2',
+            {'is-valid' : isUserNameValid},
+            {'is-invalid' : !isUserNameValid && dirty}
+          )}
           value = {formData.username}
         />
         <br/>
@@ -62,16 +75,39 @@ function App() {
           name="age"
           type="number"
           placeholder="insert your Age"
-          className="form-control mt-2"
+          className ={classnames(
+            'form-control mt-2',
+            {'is-valid' : isAgeValid},
+            {'is-invalid' : !isAgeValid && dirty}
+          )}
           onChange = {onChangeHandler}
           value = {formData.age}
+        />
+        <br/>
+        <input
+          name="city"
+          type="string"
+          placeholder="insert your City"
+          className ={classnames(
+            'form-control mt-2',
+            {'is-valid' : isCityValid},
+            {'is-invalid' : !isCityValid && touched}
+          )}
+          onChange = {onChangeHandler}
+          onBlur ={onBlurHandler}
+          value = {formData.city}
         />
          <br/>
         <select 
           name="job" 
           onChange={onChangeHandler}
-          className="form-control mt-2"
+          className ={classnames(
+            'form-control mt-2',
+            {'is-valid' : isJobValid},
+            {'is-invalid' : !isJobValid && dirty}
+          )}
         >
+          {/* HOW TO INSERT A DEFAULT VALUE TAKEN IT FROM THE FORMDATA.JOB? */}
           <option value={formData.job} hidden disabled></option>
           <option value="freelance">Freelance</option>
           <option value="employee">Employee</option>
